@@ -33,7 +33,7 @@ HeyUI:https://www.heyui.top/
 ## 前端说明： 
  * 前端使用heyui+vue.js。cdn模式引入。相比主流node构建前端，此结构开发速度更快。投产更方便并自带golang服务器。  
  #### 服务器启动：
-     ![展示](https://github.com/androidsr/images/blob/master/3333.png "服务器启动")  
+ ![展示](https://github.com/androidsr/images/blob/master/3333.png "服务器启动")  
  * 在此也重点感谢heyui作者对我的帮助，对前端小白的我来说帮助了不少，提出了不少笨笨的问题。她都依依为我们解答。    
    并在组件支持不够的情况下也积极的为我们提供了新的功能组件。  
    作者人还是相关不错的。问什么问题时都感觉是以一种xx的身份，没有一点架子什么的。时分热情。  
