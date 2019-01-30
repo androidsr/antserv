@@ -6,14 +6,18 @@
 * 数据库：mysql 
 * 前台UI: HeyUI +Vue.js  
 
-![xxx](https://github.com/androidsr/images/blob/master/111.png "图片展示")  
-
+![图片展示](https://github.com/androidsr/images/blob/master/界面1.png "登录")  
+![图片展示](https://github.com/androidsr/images/blob/master/界面2.png "主界面")  
+![图片展示](https://github.com/androidsr/images/blob/master/界面3.png "增加")  
+![图片展示](https://github.com/androidsr/images/blob/master/界面4.png "修改")  
       
 ### 相关连接：
 HeyUI:https://www.heyui.top/
 ## 功能说明：
   * 此项目可按表结构自动生成后台代码及前台ui。自动完成功能（列表展示|查询|增加|删除|详情）分页下拉框等功能。
   * 前后端分离：restful api接口。前端自带静态文件运行服务器。也可迁移自nginx运行。
+  ![展示](https://github.com/androidsr/images/blob/master/111.png "界面展示")  
+  
 ## 项目配置：
  * spring boot 项目相关功能不多做说明。
  * 工具相关配置可通过工具下*.yaml文件进行配置
