@@ -6,6 +6,9 @@
 * 数据库：mysql 
 * 前台UI: HeyUI +Vue.js  
 
+![baidu](http://www.baidu.com/img/bdlogo.gif "百度logo")  
+
+      
 ### 相关连接：
 HeyUI:https://www.heyui.top/
 ## 功能说明：
