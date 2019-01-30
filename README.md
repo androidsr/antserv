@@ -2,7 +2,7 @@
 ===
 项目依赖：
 -------
-* spring boot + mybatis
+* 后台：spring boot + mybatis
 * 数据库：mysql 
-* 
+* 前台UI: HeyUI +Vue.js
 
