@@ -2,5 +2,7 @@
 ===
 项目依赖：
 -------
-* spring boot 
-* mybatis
+* spring boot + mybatis
+* 数据库：mysql 
+* 
+
