@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zft.antserv.mapper.SysParamsMapper">
+    <select id="get" resultType="SysParams">
+		SELECT * FROM SYS_PARAMS A WHERE A.ID=#{id}
+	</select>
+    <insert id="insert">
+        INSERT INTO SYS_PARAMS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">ID,</if>
+            <if test="paramName != null and paramName != ''">PARAM_NAME,</if>
+            <if test="paramValue != null and paramValue != ''">PARAM_VALUE,</if>
+            <if test="groupName != null and groupName != ''">GROUP_NAME,</if>
+            <if test="groupId != null and groupId != ''">GROUP_ID,</if>
+            <if test="otherValue != null and otherValue != ''">OTHER_VALUE,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id},</if>
+            <if test="paramName != null and paramName != ''">#{paramName},</if>
+            <if test="paramValue != null and paramValue != ''">#{paramValue},</if>
+            <if test="groupName != null and groupName != ''">#{groupName},</if>
+            <if test="groupId != null and groupId != ''">#{groupId},</if>
+            <if test="otherValue != null and otherValue != ''">#{otherValue},</if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE SYS_PARAMS
+        <set>
+            <if test="id != null and id != ''">ID = #{id},</if>
+            <if test="paramName != null and paramName != ''">PARAM_NAME = #{paramName},</if>
+            <if test="paramValue != null and paramValue != ''">PARAM_VALUE = #{paramValue},</if>
+            <if test="groupName != null and groupName != ''">GROUP_NAME = #{groupName},</if>
+            <if test="groupId != null and groupId != ''">GROUP_ID = #{groupId},</if>
+            <if test="otherValue != null and otherValue != ''">OTHER_VALUE = #{otherValue},</if>
+        </set>
+        WHERE ID=#{id}
+    </update>
+    <delete id="delete">
+		DELETE FROM SYS_PARAMS WHERE ID=#{id}
+	</delete>
+    <select id="count" resultType="Integer">
+        SELECT count(1) FROM SYS_PARAMS a WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="paramName != null and paramName != ''">and PARAM_NAME = #{paramName}</if>
+        <if test="paramValue != null and paramValue != ''">and PARAM_VALUE = #{paramValue}</if>
+        <if test="groupName != null and groupName != ''">and GROUP_NAME = #{groupName}</if>
+        <if test="groupId != null and groupId != ''">and GROUP_ID = #{groupId}</if>
+        <if test="otherValue != null and otherValue != ''">and OTHER_VALUE = #{otherValue}</if>
+    </select>
+    <select id="findList" resultType="SysParams">
+        SELECT ID,PARAM_NAME,PARAM_VALUE,GROUP_NAME,GROUP_ID,OTHER_VALUE FROM SYS_PARAMS A WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="paramName != null and paramName != ''">and PARAM_NAME = #{paramName}</if>
+        <if test="paramValue != null and paramValue != ''">and PARAM_VALUE = #{paramValue}</if>
+        <if test="groupName != null and groupName != ''">and GROUP_NAME = #{groupName}</if>
+        <if test="groupId != null and groupId != ''">and GROUP_ID = #{groupId}</if>
+        <if test="otherValue != null and otherValue != ''">and OTHER_VALUE = #{otherValue}</if>
+        ORDER BY A.ID LIMIT ${offset}, ${limit}
+    </select>
+
+    <select id="findByGroupId" resultType="Map">
+        SELECT PARAM_VALUE as keyName,PARAM_NAME as titleName FROM SYS_PARAMS A WHERE GROUP_ID = #{groupId}
+    </select>
+</mapper>

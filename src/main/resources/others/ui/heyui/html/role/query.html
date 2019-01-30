@@ -1,0 +1,34 @@
+<div id="query">
+    <div class="h-panel">
+        <div class="h-panel-bar">
+            <span class="h-panel-title">
+                <h4>{{subTitle}}</h4>
+            </span>
+        </div>
+        <div class="h-panel-body">
+            <h-form ref="form" label-position="right" :label-width="90" :model="queryInfo">
+                <h-form-item label="角色名称">
+                    <input type="text" v-model="queryInfo.roleName" />
+                </h-form-item>
+                <h-form-item>
+                    <h-button color="primary" @click="query">提交</h-button>&nbsp;&nbsp;&nbsp;
+                    <h-button @click="close">取消</h-button>&nbsp;&nbsp;&nbsp;
+                </h-form-item>
+            </h-form>
+        </div>
+    </div>
+</div>
+<script type="text/babel">
+    new Vue({
+        el: "#query",
+        methods: {
+            query(){
+                this.index.$emit('loadList');
+                this.close();
+            },
+            close() {
+                this.app.$emit('back');
+            }
+        },
+    });
+</script>

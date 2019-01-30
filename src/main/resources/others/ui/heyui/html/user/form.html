@@ -1,0 +1,129 @@
+<div id="form">
+    <div class="h-panel">
+        <div class="h-panel-bar">
+            <span class="h-panel-title">
+                <h4>{{subTitle}}</h4>
+            </span>
+        </div>
+        <div class="h-panel-body">
+            <h-form ref="form" label-position="right" :label-width="120" :rules="verify" mode="twocolumn" :model="model">
+                <h-formitem label="用户账号" prop="id">
+                    <input type="text" v-model="model.id" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="用户姓名" prop="name">
+                    <input type="text" v-model="model.name" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="用户密码" prop="passwd" v-show="this.btnType==2">
+                    <input type="password" v-model="passwd" :readonly="readonly" :disabled="this.btnType!=2" />
+                </h-formitem>
+                <h-formitem label="确认密码" prop="passwd2" v-show="this.btnType==2">
+                    <input type="password" v-model="passwd2" :readonly="readonly" :disabled="this.btnType!=2" />
+                </h-formitem>
+                <h-formitem label="联系电话" prop="phone">
+                    <input type="text" v-model="model.phone" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="联系邮箱" prop="email">
+                    <input type="text" v-model="model.email" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="年龄" prop="age">
+                    <input type="text" v-model="model.age" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="用户角色" prop="roleId">
+                    <s-select url="/role/select" v-model="model.roleId"></s-select>
+                </h-formitem>
+                <h-formitem label="性别" prop="sex">
+                    <h-radio v-model="model.sex" :datas="sexData" :readonly="readonly"></h-radio>
+                </h-formitem>
+
+                <h-formitem single>
+                    <h-button text-color="primary" :loading="isLoading" @click="submit" v-show="!readonly">提交</h-button>&nbsp;&nbsp;&nbsp;
+                    <h-button @click="close" text-color="yellow">取消</h-button>&nbsp;&nbsp;&nbsp;
+                </h-formitem>
+            </h-form>
+        </div>
+    </div>
+</div>
+
+<script type="text/babel">
+    new Vue({
+        el: "#form",
+        created() {
+            if(this.selection){//编辑/详情
+                this.model = this.selection;
+                api.get(this.currentMenu+ "/"+this.model.id).then(res=>{this.model = res.data;});
+            }
+        },
+        data:{
+            model: {
+                id:'',
+                name:'',
+                phone:'',
+                email:'',
+                age:'',
+                roleId:'',
+                sex:1
+            },
+            passwd:'',
+            passwd2:'',
+            isLoading: false,
+            sexData:{1: '男',2: '女'},
+            verify: {
+                required: [
+                    'passwd',
+                    'passwd2',
+                    'id',
+                    'name',
+                    'phone',
+                    'email',
+                    'roleId',
+                ]
+            }
+        },
+        methods: {
+            submit(){
+                console.log(this.model.roleId);
+                let validResult = this.$refs.form.valid();
+                if (validResult.result) {
+                    if(this.btnType==2){//新增
+                        if(this.passwd == "" || this.passwd != this.passwd2){
+                            this.passwd2 = "";
+                            this.$Message.error("输入密码有误，请重新输入");
+                            return 
+                        }
+                        this.model.passwd = hex_md5(this.passwd);
+                        this.isLoading = true;
+                        api.post(this.currentMenu , this.model).then(res=>{
+                            this.respEnd(res.data);
+                        }).catch(err=>{
+                            this.isLoading = false;
+                            this.$Message.error('请求'+url+"失败");
+                        });
+                    } else {//编辑
+                        api.put(this.currentMenu + "/"+this.model.id, this.model).then(res=>{
+                            this.respEnd(res.data);
+                        }).catch(err=>{
+                            this.isLoading = false;
+                            this.$Message.error('请求'+url+"失败");
+                        });
+                    }
+                } else {
+                    this.isLoading = false;
+                }
+            },
+            respEnd(data){
+                this.isLoading = false;
+                if(data.code == "00200"){
+                    this.$Message.success(data.msg);
+                    this.close();
+                    this.index.$emit('loadList');
+                } else {
+                    this.$Message.error(data.msg);
+                }
+            },
+            
+            close() {
+                this.app.$emit('back');
+            }
+        },
+    });
+</script>

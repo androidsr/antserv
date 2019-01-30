@@ -1,0 +1,20 @@
+mysql:
+  username: root
+  password: root
+  address: "localhost:3306"
+  database: test
+
+oracle:
+  username: act
+  password: act
+  address: "192.168.201.31:1521"
+  sid: wlzf
+
+project:
+  db: oracle                            # oracle , mysql  后台支持数据库版本
+  dir: /mnt/d/dev/java/ideawork         # 开发项目目录
+  name: newbm                           # 项目名称
+  pkg: cn.zft.newbm                     # 项目包名
+  html: /mnt/d/dev/web/newbm/html       # html保存根目录
+  exclude:                              # 排序表名称开关 
+    - sys_

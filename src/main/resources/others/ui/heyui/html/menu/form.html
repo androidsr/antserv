@@ -1,0 +1,122 @@
+<div id="form">
+    <div class="h-panel">
+        <div class="h-panel-bar">
+            <span class="h-panel-title">
+                <h4>{{subTitle}}</h4>
+            </span>
+        </div>
+        <div class="h-panel-body">
+            <h-form ref="form" label-position="right" :label-width="120" :rules="verify" :model="model">
+                <h-formitem label="级别" prop="menuLevel">
+                    <h-select v-model="model.menuLevel" :datas="select.mlevel" :null-option="false" :disabled="readonly"></h-select>
+                </h-formitem>
+                <h-formitem label="菜单名称" prop="title" :readonly="readonly">
+                    <input type="text" v-model="model.title" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="地址" prop="menuKey">
+                    <input type="text" v-model="model.menuKey" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="按钮" prop="btnId">
+                    <h-select v-model="btnId" :disabled="model.menuLevel==2 ? false:true" :datas="select.btnId"
+                        :multiple="true" :readonly="readonly"></h-select>
+                </h-formitem>
+                <h-formitem label="上级菜单" prop="superId">
+                    <s-select url="/menu/select" v-model="model.superId"></s-select>
+                </h-formitem>
+                <h-formitem label="图标" prop="icon">
+                    <input type="text" v-model="model.icon" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem>
+                    <h-button text-color="primary" :loading="isLoading" @click="submit" v-show="!readonly">提交</h-button>&nbsp;&nbsp;&nbsp;
+                    <h-button @click="close" text-color="yellow">取消</h-button>&nbsp;&nbsp;&nbsp;
+                </h-formitem>
+            </h-form>
+        </div>
+    </div>
+</div>
+
+<script type="text/babel">
+    new Vue({
+        el: "#form",
+        created() {
+            if(this.selection){//编辑/详情
+                this.model = this.selection;
+                api.get(this.currentMenu+ "/" +this.model.id).then(res=>{
+                    this.model = res.data;
+                    if(this.model.btnId){
+                        this.btnId = this.model.btnId.split(',');
+                    }
+                });
+            }
+            api.get("/params/select",{groupId:'MENU_LEVEL'}).then(res=>{this.select.mlevel = res.data;});
+            api.get("/button/select",{ids:'1,2'}).then(res=>{this.select.btnId = res.data.data;});
+        },
+        data:{
+            model: {
+                menuLevel:2,
+                title:'',
+                menuKey:'',
+                btnId:'',
+                superId:'',
+                icon:'',
+            },
+            select:{
+                mlevel:[],
+                btnId:[],
+            },
+            btnId:'',
+            isLoading: false,
+          
+            verify: {
+                required: [
+                    'title',
+                    'menuLevel'
+                ]
+            }
+        },
+        methods: {
+            submit(){
+                this.isLoading = true;
+                let validResult = this.$refs.form.valid();
+                if(this.btnId && this.btnId.length >0){
+                    this.model.btnId =  this.btnId.join(',');
+                } else {
+                    this.model.btnId = null;
+                }
+                if (validResult.result) {
+                    if(this.btnType==2){//新增
+                        this.model.id = "";
+                        api.post(this.currentMenu , this.model).then(res=>{
+                            this.respEnd(res.data);
+                        }).catch(err=>{
+                            this.isLoading = false;
+                            this.$Message.error('请求'+url+"失败");
+                        });
+                    } else {//编辑
+                        api.put(this.currentMenu + "/" +this.model.id,this.model).then(res=>{
+                            this.respEnd(res.data);
+                        }).catch(err=>{
+                            this.isLoading = false;
+                            this.$Message.error('请求'+url+"失败");
+                        });
+                    }
+                } else {
+                    this.isLoading = false;
+                }
+            },
+            respEnd(data){
+                this.isLoading = false;
+                if(data.code == "00200"){
+                    this.$Message.success(data.msg);
+                    this.close();
+                    this.index.$emit('loadList');
+                } else {
+                    this.$Message.error(data.msg);
+                }
+            },
+            close() {
+                this.app.$emit('back');
+            }
+        },
+    });
+</script>

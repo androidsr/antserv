@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zft.antserv.mapper.SysButtonsMapper">
+    <select id="get" resultType="SysButtons">
+		SELECT * FROM SYS_BUTTONS A WHERE A.ID=#{id}
+	</select>
+    <insert id="insert">
+        INSERT INTO SYS_BUTTONS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">ID,</if>
+            <if test="title != null and title != ''">TITLE,</if>
+            <if test="click != null and click != ''">CLICK,</if>
+            <if test="icon != null and icon != ''">ICON,</if>
+            <if test="state != null and state != ''">STATE,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="click != null and click != ''">#{click},</if>
+            <if test="icon != null and icon != ''">#{icon},</if>
+            <if test="state != null and state != ''">#{state},</if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE SYS_BUTTONS
+        <set>
+            <if test="id != null and id != ''">ID = #{id},</if>
+            <if test="title != null and title != ''">TITLE = #{title},</if>
+            <if test="click != null and click != ''">CLICK = #{click},</if>
+            <if test="icon != null and icon != ''">ICON = #{icon},</if>
+            <if test="state != null and state != ''">STATE = #{state},</if>
+        </set>
+        WHERE ID=#{id}
+    </update>
+    <delete id="delete">
+		DELETE FROM SYS_BUTTONS WHERE ID=#{id}
+	</delete>
+    <select id="count" resultType="Integer">
+        SELECT count(1) FROM SYS_BUTTONS a WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="title != null and title != ''">and TITLE = #{title}</if>
+        <if test="click != null and click != ''">and CLICK = #{click}</if>
+        <if test="icon != null and icon != ''">and ICON = #{icon}</if>
+        <if test="state != null and state != ''">and STATE = #{state}</if>
+    </select>
+    <select id="findList" resultType="SysButtons">
+        SELECT ID,TITLE,CLICK,ICON,STATE FROM SYS_BUTTONS A WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="title != null and title != ''">and TITLE = #{title}</if>
+        <if test="click != null and click != ''">and CLICK = #{click}</if>
+        <if test="icon != null and icon != ''">and ICON = #{icon}</if>
+        <if test="state != null and state != ''">and STATE = #{state}</if>
+        ORDER BY A.ID LIMIT ${offset}, ${limit}
+    </select>
+
+    <select id="select" resultType="cn.zft.antserv.model.SelectVM$Select"
+            parameterType="cn.zft.antserv.model.SelectVM$Request">
+        SELECT ID as keyName,TITLE as titleName FROM SYS_BUTTONS A WHERE 1=1
+        <if test="value != null and value != ''">and (ID = #{value} or TITLE like CONCAT('%',#{value},'%'))</if>
+        ORDER BY ID
+    </select>
+
+    <select id="array" resultType="SysButtons">
+        SELECT * FROM SYS_BUTTONS A WHERE A.ID IN
+        <foreach collection="array" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getMenuButton" resultType="SysButtons">
+        select * from (select a.*, concat(b.id,'-',a.id) as role_menu from sys_buttons a
+        left join sys_menus b on FIND_IN_SET(a.id,b.BTN_ID) WHERE b.MENU_KEY = #{menuKey} ) as a
+        WHERE FIND_IN_SET(a.role_menu,(select MENU_IDS from sys_roles where id=#{role}))
+    </select>
+
+</mapper>

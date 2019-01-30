@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zft.antserv.mapper.SysUsersMapper">
+    <select id="get" resultType="SysUsers">
+		SELECT * FROM SYS_USERS A WHERE A.ID=#{id}
+	</select>
+    <insert id="insert">
+        INSERT INTO SYS_USERS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">ID,</if>
+            <if test="name != null and name != ''">NAME,</if>
+            <if test="phone != null and phone != ''">PHONE,</if>
+            <if test="email != null and email != ''">EMAIL,</if>
+            <if test="sex != null and sex != ''">SEX,</if>
+            <if test="age != null and age != ''">AGE,</if>
+            <if test="passwd != null and passwd != ''">PASSWD,</if>
+            <if test="roleId != null and roleId != ''">ROLE_ID,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="sex != null and sex != ''">#{sex},</if>
+            <if test="age != null and age != ''">#{age},</if>
+            <if test="passwd != null and passwd != ''">#{passwd},</if>
+            <if test="roleId != null and roleId != ''">#{roleId},</if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE SYS_USERS
+        <set>
+            <if test="id != null and id != ''">ID = #{id},</if>
+            <if test="name != null and name != ''">NAME = #{name},</if>
+            <if test="phone != null and phone != ''">PHONE = #{phone},</if>
+            <if test="email != null and email != ''">EMAIL = #{email},</if>
+            <if test="sex != null and sex != ''">SEX = #{sex},</if>
+            <if test="age != null and age != ''">AGE = #{age},</if>
+            <if test="passwd != null and passwd != ''">PASSWD = #{passwd},</if>
+            <if test="roleId != null and roleId != ''">ROLE_ID = #{roleId},</if>
+        </set>
+        WHERE ID=#{id}
+    </update>
+    <delete id="delete">
+		DELETE FROM SYS_USERS WHERE ID=#{id}
+	</delete>
+    <select id="count" resultType="Integer">
+        SELECT count(1) FROM SYS_USERS a WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="name != null and name != ''">and NAME = #{name}</if>
+        <if test="phone != null and phone != ''">and PHONE = #{phone}</if>
+        <if test="email != null and email != ''">and EMAIL = #{email}</if>
+        <if test="sex != null and sex != ''">and SEX = #{sex}</if>
+        <if test="age != null and age != ''">and AGE = #{age}</if>
+        <if test="passwd != null and passwd != ''">and PASSWD = #{passwd}</if>
+        <if test="roleId != null and roleId != ''">and ROLE_ID = #{roleId}</if>
+    </select>
+    <select id="findList" resultType="SysUsers">
+        SELECT ID,NAME,PHONE,EMAIL,SEX,AGE,PASSWD,ROLE_ID FROM SYS_USERS A WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="name != null and name != ''">and NAME = #{name}</if>
+        <if test="phone != null and phone != ''">and PHONE = #{phone}</if>
+        <if test="email != null and email != ''">and EMAIL = #{email}</if>
+        <if test="sex != null and sex != ''">and SEX = #{sex}</if>
+        <if test="age != null and age != ''">and AGE = #{age}</if>
+        <if test="passwd != null and passwd != ''">and PASSWD = #{passwd}</if>
+        <if test="roleId != null and roleId != ''">and ROLE_ID = #{roleId}</if>
+        ORDER BY A.ID LIMIT ${offset}, ${limit}
+    </select>
+</mapper>

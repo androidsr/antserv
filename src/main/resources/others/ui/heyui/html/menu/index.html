@@ -1,0 +1,38 @@
+<div class="h-panel" id="index">
+    <default-table ref="tvm" :columns="columns" :checkbox="false"></default-table>
+</div>
+
+<script type="text/babel">
+    Vue.prototype.index = new Vue({
+        el: "#index",
+        mounted() {
+            api.get("/params/select",{groupId:'MENU_LEVEL'}).then(res=>{
+                this.level = res.data;
+            });
+            this.$on('loadList', this.loadList);
+        },
+        data() {
+            return {
+                level:[],
+                columns: [
+                    { title: 'ID', prop: 'id' },
+                    { title: '上级菜单', prop: 'superId'},
+                    { title: '菜单名称', prop: 'title'},
+                    { title: '地址', prop: 'menuKey'},
+                    { title: '级别', prop: 'menuLevel',render:this.render5},
+                    { title: '按钮', prop: 'btnId'},
+                ],
+            }
+        },
+        methods: {
+            render5(data){
+                return this.tableRender(this.level, data);
+            },
+            loadList(){
+                var table = this.$refs.tvm;
+                table.loadList();
+            },
+        },
+    });
+
+</script>

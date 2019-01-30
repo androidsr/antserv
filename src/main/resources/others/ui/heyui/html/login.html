@@ -1,0 +1,58 @@
+<div id="login">
+    <h-modal v-model="isLogin" full-screen>
+        <div class="h-panel" style="width:400px;margin: 200px auto;">
+            <div class="h-panel-bar">
+                <span class="h-panel-title">登录</span>
+            </div>
+            <div class="h-panel-body">
+                <h-form ref="h-form" :model="model">
+                    <h-form-item label="用户名" prop="userId">
+                        <input type="text" v-model="model.userId" @keyup.enter="submit" />
+                    </h-form-item>
+                    <h-form-item label="密码" prop="passwd">
+                        <input type="password" v-model="passwd" @keyup.enter="submit" />
+                    </h-form-item>
+                    <h-form-item>
+                        <h-button color="primary" :loading="isLoading" @click="submit">登录</h-button>&nbsp;&nbsp;&nbsp;
+                        <h-button @click="reset">重置</h-button>
+                    </h-form-item>
+                </h-form>
+            </div>
+        </div>
+    </h-modal>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                passwd: '',
+                isLoading: false,
+                isLogin: true,
+                model: {}
+            },
+            methods: {
+                submit() {
+                    this.isLoading = true;
+                    this.model.passwd = hex_md5(this.passwd);
+
+                    api.post("/login", this.model).then(res => {
+                        if (res.data.code == "00200") {
+                            this.isLogin = false;
+                            api.setCookie("isLogin", res.data.userId + "/" + res.data.userName);
+                            location.href = "/";
+                        } else {
+                            this.$Message({ type: 'warn', text: res.data.msg });
+                        }
+                        this.isLoading = false;
+
+                    }).catch(err => {
+                        this.$Message({ type: 'error', text: err });
+                        this.isLoading = false;
+                    });
+                },
+                reset() {
+                    this.model = {}
+                }
+            },
+        });
+    </script>
+</div>

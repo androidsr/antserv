@@ -1,0 +1,105 @@
+<div id="form">
+    <div class="h-panel">
+        <div class="h-panel-bar">
+            <span class="h-panel-title">
+                <h4>{{subTitle}}</h4>
+            </span>
+        </div>
+        <div class="h-panel-body">
+            <h-form ref="form" label-position="right" :label-width="120" :rules="verify" :model="model">
+                <h-formitem label="参数名称" prop="paramName">
+                    <input type="text" v-model="model.paramName" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="参数值" prop="paramValue">
+                    <input type="text" v-model="model.paramValue" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="分组名称" prop="groupName">
+                    <input type="text" v-model="model.groupName" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="分组编号" prop="groupId">
+                    <input type="text" v-model="model.groupId" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem label="外联值" prop="otherValue">
+                    <input type="text" v-model="model.otherValue" :readonly="readonly" />
+                </h-formitem>
+                <h-formitem>
+                    <h-button text-color="primary" :loading="isLoading" @click="submit" v-show="!readonly">提交</h-button>&nbsp;&nbsp;&nbsp;
+                    <h-button @click="close" text-color="yellow">取消</h-button>&nbsp;&nbsp;&nbsp;
+                </h-formitem>
+            </h-form>
+        </div>
+    </div>
+</div>
+
+<script type="text/babel">
+    new Vue({
+        el: "#form",
+        created() {
+            if(this.selection){//编辑/详情
+                this.model = this.selection;
+                api.get(this.currentMenu+ "/"+this.model.id).then(res=>{this.model = res.data;});
+            }
+        },
+        data:{
+            model: {
+                paramName:'',
+                paramValue:'',
+                groupName:'',
+                groupId:'',
+                otherValue:'',
+            },
+            isLoading: false,
+            select:{
+                mlevel:[],
+                menu:[]
+            },
+            
+            verify: {
+                required: [
+                    'title',
+                    'menuLevel'
+                ]
+            }
+        },
+        methods: {
+            submit(){
+                this.isLoading = true;
+                 let validResult = this.$refs.form.valid();
+                if (validResult.result) {
+                    if(this.btnType==2){//新增
+                        this.model.id = "";
+                        api.post(this.currentMenu , this.model).then(res=>{
+                            this.respEnd(res.data);
+                        }).catch(err=>{
+                            this.isLoading = false;
+                            this.$Message.error('请求'+url+"失败");
+                        });
+                    } else {//编辑
+                        api.put(this.currentMenu + "/"+this.model.id, this.model).then(res=>{
+                            this.respEnd(res.data);
+                        }).catch(err=>{
+                            this.isLoading = false;
+                            this.$Message.error('请求'+url+"失败");
+                        });
+                    }
+                } else {
+                    this.isLoading = false;
+                }
+            },
+            respEnd(data){
+                this.isLoading = false;
+                if(data.code == "00200"){
+                    this.$Message.success(data.msg);
+                    this.close();
+                    this.index.$emit('loadList');
+                } else {
+                    this.$Message.error(data.msg);
+                }
+            },
+            
+            close() {
+                this.app.$emit('back');
+            }
+        },
+    });
+</script>

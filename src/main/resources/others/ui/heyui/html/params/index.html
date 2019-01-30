@@ -1,0 +1,30 @@
+<div class="h-panel" id="index">
+    <default-table ref="tvm" :columns="columns" :checkbox="false"></default-table>
+</div>
+
+<script type="text/babel">
+    Vue.prototype.index = new Vue({
+        el: "#index",
+        mounted() {
+            this.$on('loadList', this.loadList);
+        },
+        data() {
+            return {
+                columns: [
+                    { title: 'ID', prop: 'id'},
+                    { title: '参数名称', prop: 'paramName'},
+                    { title: '参数值', prop: 'paramValue'},
+                    { title: '分组名称', prop: 'groupName'},
+                    { title: '分组编号', prop: 'groupId' },
+                    { title: '外联值', prop: 'otherValue' },
+                ],
+            }
+        },
+        methods: {
+            loadList(){
+                var table = this.$refs.tvm;
+                table.loadList();
+            },
+        },
+    });
+</script>

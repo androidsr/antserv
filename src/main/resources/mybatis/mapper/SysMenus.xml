@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zft.antserv.mapper.SysMenuMapper">
+    <select id="get" resultType="SysMenus">
+		SELECT * FROM SYS_MENUS A WHERE A.ID=#{id}
+	</select>
+    <insert id="insert">
+        INSERT INTO SYS_MENUS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">ID,</if>
+            <if test="title != null and title != ''">TITLE,</if>
+            <if test="menuKey != null and menuKey != ''">MENU_KEY,</if>
+            <if test="menuLevel != null and menuLevel != ''">MENU_LEVEL,</if>
+            <if test="icon != null and icon != ''">ICON,</if>
+            <if test="superId != null and superId != ''">SUPER_ID,</if>
+            <if test="btnId != null and btnId != ''">BTN_ID,</if>
+            <if test="menuOrder != null and menuOrder != ''">MENU_ORDER,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="menuKey != null and menuKey != ''">#{menuKey},</if>
+            <if test="menuLevel != null and menuLevel != ''">#{menuLevel},</if>
+            <if test="icon != null and icon != ''">#{icon},</if>
+            <if test="superId != null and superId != ''">#{superId},</if>
+            <if test="btnId != null and btnId != ''">#{btnId},</if>
+            <if test="menuOrder != null and menuOrder != ''">#{menuOrder},</if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE SYS_MENUS
+        <set>
+            <if test="id != null and id != ''">ID = #{id},</if>
+            <if test="title != null and title != ''">TITLE = #{title},</if>
+            <if test="menuKey != null and menuKey != ''">MENU_KEY = #{menuKey},</if>
+            <if test="menuLevel != null and menuLevel != ''">MENU_LEVEL = #{menuLevel},</if>
+            <if test="icon != null and icon != ''">ICON = #{icon},</if>
+            <if test="superId != null and superId != ''">SUPER_ID = #{superId},</if>
+            <if test="btnId != null and btnId != ''">BTN_ID = #{btnId},</if>
+            <if test="menuOrder != null and menuOrder != ''">MENU_ORDER = #{menuOrder},</if>
+        </set>
+        WHERE ID=#{id}
+    </update>
+    <delete id="delete">
+		DELETE FROM SYS_MENUS WHERE ID=#{id}
+	</delete>
+    <select id="count" resultType="Integer">
+        SELECT count(1) FROM SYS_MENUS a WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="title != null and title != ''">and TITLE = #{title}</if>
+        <if test="menuKey != null and menuKey != ''">and MENU_KEY = #{menuKey}</if>
+        <if test="menuLevel != null and menuLevel != ''">and MENU_LEVEL = #{menuLevel}</if>
+        <if test="icon != null and icon != ''">and ICON = #{icon}</if>
+        <if test="superId != null and superId != ''">and SUPER_ID = #{superId}</if>
+        <if test="btnId != null and btnId != ''">and BTN_ID = #{btnId}</if>
+        <if test="menuOrder != null and menuOrder != ''">and MENU_ORDER = #{menuOrder}</if>
+    </select>
+    <select id="findList" resultType="SysMenus">
+        SELECT A.ID,A.TITLE,A.MENU_KEY,A.MENU_LEVEL,A.ICON,B.TITLE AS SUPER_ID,
+        ( SELECT GROUP_CONCAT( C.TITLE ) FROM SYS_BUTTONS C WHERE FIND_IN_SET ( C.ID, A.BTN_ID ) ) BTN_ID,
+        A.MENU_ORDER FROM SYS_MENUS A LEFT JOIN SYS_MENUS B ON A.SUPER_ID = B.ID where 1=1
+        <if test="id != null and id != ''">and A.ID = #{id}</if>
+        <if test="title != null and title != ''">and A.TITLE = #{title}</if>
+        <if test="menuKey != null and menuKey != ''">and A.MENU_KEY = #{menuKey}</if>
+        <if test="menuLevel != null and menuLevel != ''">and A.MENU_LEVEL = #{menuLevel}</if>
+        <if test="icon != null and icon != ''">and A.ICON = #{icon}</if>
+        <if test="superId != null and superId != ''">and A.SUPER_ID = #{superId}</if>
+        <if test="btnId != null and btnId != ''">and A.BTN_ID = #{btnId}</if>
+        <if test="menuOrder != null and menuOrder != ''">and A.MENU_ORDER = #{menuOrder}</if>
+        ORDER BY A.ID LIMIT ${offset}, ${limit}
+    </select>
+    <select id="getMenus" resultType="SysMenus">
+        SELECT ID,TITLE,MENU_KEY,MENU_LEVEL,ICON,SUPER_ID,BTN_ID,MENU_ORDER FROM SYS_MENUS A
+        WHERE 1=1
+        <if test="role != null and role != ''">
+            AND exists (SELECT * FROM SYS_ROLES B WHERE FIND_IN_SET(A.ID,B.MENU_IDS) AND ID=#{role})
+        </if>
+        ORDER BY MENU_ORDER
+    </select>
+
+    <select id="select" resultType="cn.zft.antserv.model.SelectVM$Select"
+            parameterType="cn.zft.antserv.model.SelectVM$Request">
+        SELECT ID as keyName,TITLE as titleName FROM SYS_MENUS A WHERE 1=1
+        <if test="value != null and value != ''">and (ID = #{value} or TITLE like CONCAT('%',#{value},'%'))</if>
+        ORDER BY MENU_ORDER LIMIT ${cur}, ${size}
+    </select>
+</mapper>

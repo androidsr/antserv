@@ -1,0 +1,11 @@
+.v-panel{
+    z-index: 2;
+    box-shadow:2px 0 10px 0 rgba(29,35,41,.05)
+}
+.v-context-panel:hover{
+    box-shadow:2px 0 10px 0 rgba(29,35,41,.05)
+}
+.h-layout-header,.h-layout-header{
+    height: 55px;
+    line-height:55px;
+}

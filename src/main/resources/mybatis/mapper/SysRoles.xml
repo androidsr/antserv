@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zft.antserv.mapper.SysRolesMapper">
+    <select id="get" resultType="SysRoles">
+		SELECT * FROM SYS_ROLES A WHERE A.ID=#{id}
+	</select>
+    <insert id="insert">
+        INSERT INTO SYS_ROLES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">ID,</if>
+            <if test="roleName != null and roleName != ''">ROLE_NAME,</if>
+            <if test="menuIds != null and menuIds != ''">MENU_IDS,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id},</if>
+            <if test="roleName != null and roleName != ''">#{roleName},</if>
+            <if test="menuIds != null and menuIds != ''">#{menuIds},</if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE SYS_ROLES
+        <set>
+            <if test="id != null and id != ''">ID = #{id},</if>
+            <if test="roleName != null and roleName != ''">ROLE_NAME = #{roleName},</if>
+            <if test="menuIds != null and menuIds != ''">MENU_IDS = #{menuIds},</if>
+        </set>
+        WHERE ID=#{id}
+    </update>
+    <delete id="delete">
+		DELETE FROM SYS_ROLES WHERE ID=#{id}
+	</delete>
+    <select id="count" resultType="Integer">
+        SELECT count(1) FROM SYS_ROLES a WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="roleName != null and roleName != ''">and ROLE_NAME = #{roleName}</if>
+        <if test="menuIds != null and menuIds != ''">and MENU_IDS = #{menuIds}</if>
+    </select>
+    <select id="findList" resultType="SysRoles">
+        SELECT ID,ROLE_NAME,MENU_IDS FROM SYS_ROLES A WHERE 1=1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+        <if test="roleName != null and roleName != ''">and ROLE_NAME = #{roleName}</if>
+        <if test="menuIds != null and menuIds != ''">and MENU_IDS = #{menuIds}</if>
+        ORDER BY A.ID LIMIT ${offset}, ${limit}
+    </select>
+
+    <select id="select" resultType="cn.zft.antserv.model.SelectVM$Select"
+            parameterType="cn.zft.antserv.model.SelectVM$Request">
+        SELECT ID as keyName,role_name as titleName FROM sys_roles A WHERE 1=1
+        <if test="value != null and value != ''">and (ID = #{value} or role_name like CONCAT('%',#{value},'%'))</if>
+        ORDER BY ID LIMIT ${cur}, ${size}
+    </select>
+
+</mapper>

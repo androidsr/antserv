@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>管理系统</title>
+
+    <script src="/static/js/polyfill.min.js"></script>
+    <script src="/static/js/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heyui@v1.15.0"></script>
+    <script src="/static/js/axios.min.js"></script>
+    <script src="/static/js/less.min.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/md5.js"></script>
+    <script src="/static/js/browser.min.js"></script>
+    <script type="text/babel" src="/static/js/components.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/heyui/themes/index.css">
+    </link>
+    <link rel="stylesheet" href="/static/css/var.css" />
+</head>
+
+<body style="background:#f3f6f8">
+    <div id="app" style="display:none">
+        <h-layout :sider-fixed="siderFixed" :sider-collapsed="siderCollapsed">
+            <h-sider theme="white" class="v-panel" :style="{height:height}">
+                <div style="height:55px; text-align: center;line-height:55px;">
+                    <h3>管理系统</h3>
+                </div>
+                <h-menu :datas="menus" @click="menuClick" class-name="h-menu-white" :inline-collapsed="siderCollapsed"
+                    ref="menu"></h-menu>
+            </h-sider>
+            <h-layout :header-fixed="headerFixed">
+                <h-header theme="white" class="v-panel">
+                    <div style="float:left;">
+                        <h-button icon="h-icon-menu" size="l" no-border @click="siderCollapsed=!siderCollapsed"></h-button>
+                    </div>{{title}}
+                    <div style="float: right;margin-right: 6px;">
+                        <Modal v-model="opend" :close-on-mask="false">
+                            <div slot="header">修改密码</div>
+                            <div v-width="400">
+                                <h-form ref="pwdForm" label-position="left" :label-width="110" :rules="verify" :model="model">
+                                    <h-formitem label="原密码" prop="passwd">
+                                        <input type="password" v-model="model.passwd" />
+                                    </h-formitem>
+                                    <h-formitem label="新密码" prop="newPasswd">
+                                        <input type="password" v-model="model.newPasswd" />
+                                    </h-formitem>
+                                    <h-formitem label="确认密码" prop="newPasswd2">
+                                        <input type="password" v-model="model.newPasswd2" />
+                                    </h-formitem>
+                                </h-form>
+                            </div>
+                            <div slot="footer">
+                                <button class="h-btn" @click="opend=false">取消</button>
+                                <h-button color="primary" :loading="isLoading" @click="submit">确认</h-button>
+                            </div>
+                        </Modal>
+                        <h-dropdownmenu @click="trigger" align="right" :datas="param" class-name="h-text-dropdown">
+                            <span>{{loginName}}</span>
+                        </h-dropdownmenu>
+                    </div>
+                </h-header>
+                <h-content style="margin:16px;">
+                    <div id="list" v-show="list" class="v-context-panel"></div>
+                    <div id="sub" v-show="sub" class="v-context-panel"></div>
+                </h-content>
+            </h-layout>
+        </h-layout>
+    </div>
+
+    <script type="text/babel">
+        HeyUI.config('dict.keyName', "keyName");
+        HeyUI.config('dict.titleName', "titleName");
+        document.getElementById("app").style.display="none";
+        Vue.prototype.queryInfo = {};
+        Vue.prototype.currentMenu;
+        Vue.prototype.app = new Vue({
+            el: "#app",
+            mounted() {
+                this.$on('switchView',this.switchView);
+                this.$on('back',this.back);
+                if (!api.getCookie("isLogin")) {
+                    this.switchView('/login.html');
+                }else{
+                    document.getElementById("app").style.display="";
+                    this.loginName = api.getCookie("isLogin").split("/")[1];
+                    api.get("/menu/home").then(res=>{this.menus = res.data;});
+                }
+            },
+            data: {
+                loginName:'个人中心',
+                headerFixed: false,
+                siderFixed: false,
+                siderCollapsed: false,
+                list:true,
+                sub:false,
+                opend:false,
+                isLoading:false,
+                inlineCollapsed:false,
+                height:document.documentElement.clientHeight + 'px',
+                title:'主页',
+                menus: [],
+                param: [{
+                    keyName:"passwd",
+                    titleName:"修改密码"
+                },{
+                    keyName:"logout",
+                    titleName:"注销"
+                }],
+                verify:{
+                    required: [
+                        'passwd',
+                        'newPasswd',
+                        'newPasswd2',
+                    ]
+                },
+                model:{
+                    passwd:'',
+                    newPasswd:'',
+                    newPasswd2:'',
+                }
+            
+            },
+            methods: {
+                submit(){
+                    let validResult = this.$refs.pwdForm.valid();
+                    if (validResult.result) {
+                        if (!this.model.newPasswd || this.model.newPasswd != this.model.newPasswd2){
+                            this.model.newPasswd2 = "";
+                            this.$Message['error']('再次输入密码不一至');
+                            return;
+                        }
+                        this.isLoading = true;
+                        let userId = api.getCookie("isLogin").split("/")[0];
+                        api.put("/login",{userId:userId,passwd:hex_md5(this.model.passwd),newPasswd:hex_md5(this.model.newPasswd)}).then(res=>{
+                            this.isLoading = false;
+                            if(res.data.code == "00200"){
+                                api.delCookie("isLogin");
+                                location.href = "/";
+                            } else {
+                                this.$Message['error'](res.data.msg, 2000);
+                            }
+                        });
+                    }
+                },
+                trigger(code, data, event){
+                    if(code == "passwd"){
+                        this.opend = true;
+                    } else {
+                        this.$Confirm("确定注销登录？", "提示").then(() => {
+                            api.delCookie("isLogin");
+                            api.delete("/login");
+                            location.href = "/";
+                        });
+                    }                 
+                },
+                menuClick (data) {
+                    let key = data.key;
+                    if (!key) {
+                        return;
+                    }
+                    this.list = false;
+                    this.sub = true;
+                    Vue.prototype.currentMenu = key;
+                    this.switchView(data.key, data.title);
+                },
+                switchView (url , title) {
+                    axios.get(url).then(res=> {
+                        let tmp = this.list;
+                        this.list = this.sub;
+                        this.sub = tmp;
+                        var context;
+                        if(this.list){
+                            this.title = title;
+                            context = document.getElementById("list");
+                        }else{
+                            context = document.getElementById("sub");
+                        }
+                        context.innerHTML = res.data;
+                        eval(context.getElementsByTagName("script")[0].innerHTML);
+                    }).catch(err=>{
+                        console.error(err);
+                        this.$Message['error']('获取'+url+"失败", 2000);
+                    });
+                },
+                back() {
+                    this.list = true;
+                    this.sub = false;
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>
