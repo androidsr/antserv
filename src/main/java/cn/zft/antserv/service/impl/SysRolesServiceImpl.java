@@ -33,7 +33,7 @@ public class SysRolesServiceImpl implements SysRolesService {
 
     @Override
     public void add(SysRoles user) {
-        sysRolesMapper.insert(user);
+        sysRolesMapper.add(user);
     }
 
     @Override

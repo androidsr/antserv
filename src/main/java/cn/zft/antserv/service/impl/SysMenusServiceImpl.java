@@ -29,7 +29,7 @@ public class SysMenusServiceImpl implements SysMenusService {
 
     @Override
     public void add(SysMenus user) {
-        sysMenuMapper.insert(user);
+        sysMenuMapper.add(user);
     }
 
     @Override

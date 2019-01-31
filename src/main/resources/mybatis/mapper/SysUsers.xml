@@ -4,7 +4,7 @@
     <select id="get" resultType="SysUsers">
 		SELECT * FROM SYS_USERS A WHERE A.ID=#{id}
 	</select>
-    <insert id="insert">
+    <insert id="add">
         INSERT INTO SYS_USERS
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">ID,</if>

@@ -1,6 +1,5 @@
 package cn.zft.antserv.service.impl;
 
-import cn.zft.antserv.entity.SysMenus;
 import cn.zft.antserv.entity.SysParams;
 import cn.zft.antserv.mapper.SysParamsMapper;
 import cn.zft.antserv.model.DataTableVM;
@@ -38,7 +37,7 @@ public class SysParamsServiceImpl implements SysParamsService {
 
     @Override
     public void add(SysParams user) {
-        sysParamsMapper.insert(user);
+        sysParamsMapper.add(user);
     }
 
     @Override

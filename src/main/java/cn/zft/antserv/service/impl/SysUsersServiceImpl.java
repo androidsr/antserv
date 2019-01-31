@@ -33,7 +33,7 @@ public class SysUsersServiceImpl implements SysUsersService {
 
     @Override
     public void add(SysUsers user) {
-        sysUsersMapper.insert(user);
+        sysUsersMapper.add(user);
     }
 
     @Override

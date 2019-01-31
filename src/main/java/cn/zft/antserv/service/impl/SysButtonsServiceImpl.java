@@ -1,7 +1,6 @@
 package cn.zft.antserv.service.impl;
 
 import cn.zft.antserv.entity.SysButtons;
-import cn.zft.antserv.entity.SysMenus;
 import cn.zft.antserv.mapper.SysButtonsMapper;
 import cn.zft.antserv.mapper.SysMenuMapper;
 import cn.zft.antserv.model.DataTableVM;
@@ -39,7 +38,7 @@ public class SysButtonsServiceImpl implements SysButtonsService {
 
     @Override
     public void add(SysButtons user) {
-        sysButtonsMapper.insert(user);
+        sysButtonsMapper.add(user);
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface Mapper<T, PK> {
 
     List<T> findList(Map<String, Object> params);
 
-    void insert(T entity);
+    void add(T entity);
 
     void delete(PK id);
 
