@@ -24,7 +24,7 @@ HeyUI:https://www.heyui.top/
  
  ## tools工具使用：
   * 通过tools下工具生成相关代码时需数据库字段带有说明最好。无说明的情况下默认标题以为字段名称。生成后可手工进行修改。
-  * 默认执行./autocode 会自动生成所有表相关的前后台代码。 也可执行./autocode 表名 生成单张表相关代码。
+  * 默认执行./系统-code 会自动生成所有表相关的前后台代码。 也可执行./系统-code 表名 生成单张表相关代码。
     ![展示](https://github.com/androidsr/images/blob/master/2222.png "工具使用")  
   * 生成代码后需要对项目做一些改动。当然正常情况下在不改动下也是可以运行的。如：@RequestMapping("/表名") controller 中这里的名字是以表名进行生成的
  
